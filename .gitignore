@@ -22,6 +22,7 @@ ExportedObj/
 *.booproj
 *.svd
 *.pdb
+*.meta
 
 # Unity3D generated meta files
 *.pidb.meta
@@ -35,3 +36,4 @@ sysinfo.txt
 
 # Mac Junk
 .DS_Store
+.vscode/
