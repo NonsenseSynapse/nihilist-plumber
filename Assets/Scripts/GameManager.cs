@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour {
 	public int columns = 8;
 	public Transform floorTile;
 
+	private Transform player;
 	private float minX;
 	private float maxX;
 	private float minY;
@@ -28,12 +29,22 @@ public class GameManager : MonoBehaviour {
 
 	void InitGame() {
 		InitFloor();
+		InitPlayer();
 	}
 		
 	void InitFloor() {
 		for (int x = (int) Mathf.Floor(minX); x < (int)Mathf.Ceil(maxX) + 1; x++) {
 			Instantiate(floorTile, new Vector3(x, minY + 0.5f, 0), Quaternion.identity);
 		}
+	}
+
+	void InitPlayer() {
+		player = GameObject.FindGameObjectWithTag("Player").transform;
+		float totalWidth = maxX - minX;
+		int leftOffset = Mathf.Max(2, (int)Mathf.Floor(totalWidth / 4f));
+		int startingX = (int) Mathf.Floor(minX) + leftOffset;
+		int startingY = (int) minY + 1;
+		Instantiate(player, new Vector3(startingX, startingY, 0), Quaternion.identity);
 	}
 
 	void Awake () {
