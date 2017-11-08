@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour {
 	public int columns = 8;
 	public Transform floorTile;
 
-	private Transform player;
+	private GameObject player;
 	private float minX;
 	private float maxX;
 	private float minY;
@@ -39,12 +39,13 @@ public class GameManager : MonoBehaviour {
 	}
 
 	void InitPlayer() {
-		player = GameObject.FindGameObjectWithTag("Player").transform;
+		player = GameObject.FindGameObjectWithTag("Player");
 		float totalWidth = maxX - minX;
 		int leftOffset = Mathf.Max(2, (int)Mathf.Floor(totalWidth / 4f));
 		int startingX = (int) Mathf.Floor(minX) + leftOffset;
-		int startingY = (int) minY + 1;
-		Instantiate(player, new Vector3(startingX, startingY, 0), Quaternion.identity);
+		int startingY = (int) minY + 3;
+//		Instantiate(player, new Vector3(startingX, startingY, 0), Quaternion.identity);
+		player.transform.position = new Vector3(startingX, startingY, 0);
 	}
 
 	void Awake () {
