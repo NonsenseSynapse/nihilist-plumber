@@ -5,10 +5,11 @@ using UnityEngine;
 public class GameManager : MonoBehaviour {
 
 	public static GameManager instance = null;
-	public int columns = 8;
 	public Transform floorTile;
+	public Transform enemy;
 
 	private GameObject player;
+	private GameObject fullFloor;
 	private float minX;
 	private float maxX;
 	private float minY;
@@ -30,11 +31,16 @@ public class GameManager : MonoBehaviour {
 	void InitGame() {
 		InitFloor();
 		InitPlayer();
+		InitEnemies();
 	}
 		
 	void InitFloor() {
-		for (int x = (int) Mathf.Floor(minX); x < (int)Mathf.Ceil(maxX) + 1; x++) {
-			Instantiate(floorTile, new Vector3(x, minY + 0.5f, 0), Quaternion.identity);
+		fullFloor = GameObject.FindGameObjectWithTag("FullFloor");
+		int floorStart = (int) Mathf.Floor(minX);
+		int floorEnd = (int) Mathf.Ceil(maxX) + 3;
+		for (int x = floorStart; x < floorEnd; x++) {
+			Transform newTile = Instantiate(floorTile, new Vector3(x, minY + 0.5f, 0), Quaternion.identity);
+			newTile.parent = fullFloor.transform;
 		}
 	}
 
@@ -44,8 +50,24 @@ public class GameManager : MonoBehaviour {
 		int leftOffset = Mathf.Max(2, (int)Mathf.Floor(totalWidth / 4f));
 		int startingX = (int) Mathf.Floor(minX) + leftOffset;
 		int startingY = (int) minY + 3;
-//		Instantiate(player, new Vector3(startingX, startingY, 0), Quaternion.identity);
 		player.transform.position = new Vector3(startingX, startingY, 0);
+	}
+
+	void InitEnemies() {
+		InvokeRepeating("SpawnEnemy", 2.0f, 5.0f);
+	}
+
+	void SpawnEnemy() {
+		Transform newEnemy = Instantiate(enemy, new Vector3(maxX, minY + 2, 0), Quaternion.identity);
+	}
+
+	void RemoveOffscreenEnemies() {
+		GameObject[] allEnemies = GameObject.FindGameObjectsWithTag("Enemy");
+		foreach (GameObject enemy in allEnemies) {
+			if (enemy.transform.position.x <= minX - 2 || enemy.transform.position.y <= minY - 2) {
+				Destroy(enemy);
+			}
+		}
 	}
 
 	void Awake () {
@@ -61,6 +83,6 @@ public class GameManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+		RemoveOffscreenEnemies();
 	}
 }
